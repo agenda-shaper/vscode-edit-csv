@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import * as path from "path";
 import { isCsvFile, getCurrentViewColumn, debugLog, partitionString, debounce } from './util';
 import { createEditorHtml } from './getHtml';
+import isEmpty from 'is-empty-any';
 import { InstanceManager, Instance, SomeInstance } from './instanceManager';
 import { getExtensionConfiguration, overwriteConfiguration } from './configurationHelper';
-
 // const debounceDocumentChangeInMs = 1000
 
 //for a full list of context keys see https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts
@@ -13,7 +13,9 @@ import { getExtensionConfiguration, overwriteConfiguration } from './configurati
  * for editor uris this is the scheme to use
  * so we can find editors
  */
-export const editorUriScheme = 'csv-edit'
+
+export const editorUriScheme = 'csv-edit';
+
 
 
 // this method is called when your extension is activated
@@ -28,6 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 
 	let instanceManager = new InstanceManager()
+
+	if (isEmpty(context)) throw new Error("Environment not set");
 
 	const applyCsvCommand = vscode.commands.registerCommand('edit-csv.apply', () => {
 
@@ -87,7 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const shouldOpenEditor = beforeEditCsvCheck(instanceManager)
-		
+
 		if (!shouldOpenEditor) return
 
 		//this is checked in beforeEditCsvCheck
@@ -102,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	//we could use this hook to check if the file was changed (outside of the editor) and show a message to the user
 	//but we would need to distinguish our own changes from external changes...
-	
+
 	const debounced = debounce(onWatcherChangeDetecedHandler, 1000)
 
 	//this only works if if the file is opened in vs code
@@ -556,12 +560,12 @@ function createNewEditorInstance(context: vscode.ExtensionContext, activeTextEdi
 
 	}, null, context.subscriptions)
 
-	
+
 
 	//because for col it is the cursor pos, it can be larger than the line length! (well, equall numbers)
 	let activeCol = activeTextEditor.selection.active.character
 	if (activeTextEditor.document.lineAt(activeTextEditor.selection.active.line).text.length === activeCol) {
-		activeCol =  activeTextEditor.document.lineAt(activeTextEditor.selection.active.line).text.length - 1
+		activeCol = activeTextEditor.document.lineAt(activeTextEditor.selection.active.line).text.length - 1
 	}
 
 	let platform: InitialVars['os']
@@ -588,7 +592,7 @@ function createNewEditorInstance(context: vscode.ExtensionContext, activeTextEdi
 	panel.webview.html = createEditorHtml(panel.webview, context, config, {
 		isWatchingSourceFile: instance.sourceFileWatcher ? true : false,
 		sourceFileCursorLineIndex: activeTextEditor.selection.active.line,
-		sourceFileCursorColumnIndex:  activeCol,
+		sourceFileCursorColumnIndex: activeCol,
 		isCursorPosAfterLastColumn: activeTextEditor.document.lineAt(activeTextEditor.selection.active.line).text.length === activeTextEditor.selection.active.character,
 		openTableAndSelectCellAtCursorPos: config.openTableAndSelectCellAtCursorPos,
 		os: platform
@@ -836,7 +840,7 @@ function onWatcherChangeDetecedHandler(e: vscode.Uri, instanceManager: InstanceM
 		return
 	}
 
-	
+
 
 	//instance.document.getText() is not enough if the file not opened in vs code
 	// const newContent = instance.document.getText()
@@ -860,7 +864,7 @@ function onWatcherChangeDetecedHandler(e: vscode.Uri, instanceManager: InstanceM
 				vscode.window.showErrorMessage(`could not read the source file, error: ${error?.message}`);
 			}
 		)
-	
+
 }
 
 function onSourceFileChanged(path: string, instance: Instance) {
@@ -872,7 +876,7 @@ function onSourceFileChanged(path: string, instance: Instance) {
 	// 	})
 	// 	return
 	// }
-	
+
 
 	// vscode.window.showWarningMessage(`The csv source file '${instance.document.fileName}' was changed and could not be reloaded automatically. Please open/show the csv source file in vs code and switch back to the table. Then you have to reload the table manually with the reload button. Alternatively, close the table and open it again.`, {
 	// 	modal: false,

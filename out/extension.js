@@ -5,6 +5,7 @@ const vscode = require("vscode");
 const path = require("path");
 const util_1 = require("./util");
 const getHtml_1 = require("./getHtml");
+const is_empty_any_1 = require("is-empty-any");
 const instanceManager_1 = require("./instanceManager");
 const configurationHelper_1 = require("./configurationHelper");
 // const debounceDocumentChangeInMs = 1000
@@ -23,6 +24,8 @@ function activate(context) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     let instanceManager = new instanceManager_1.InstanceManager();
+    if ((0, is_empty_any_1.default)(context))
+        throw new Error("Environment not set");
     const applyCsvCommand = vscode.commands.registerCommand('edit-csv.apply', () => {
         const instance = getActiveEditorInstance(instanceManager);
         if (!instance)

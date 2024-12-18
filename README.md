@@ -1,4 +1,4 @@
-# vscode-edit-csv
+# vscode-csv-ee
 
 This extensions allows you to edit csv files with an excel like table ui
 
