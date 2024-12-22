@@ -12,7 +12,7 @@ Execute the command `edit as csv` to open an editor for the current file.
 
 *Execute the command again to switch back to the source file or to switch back to the editor*
 
-![feature X](images/titleImg.gif)
+![feature X](https://github.com/janisdd/vscode-edit-csv/raw/HEAD/images/titleImg.gif)
 
 **Note that the data flow is one way (editor to source file). If you make changes to the source file (.csv) while the editor is open, the editor will not be updated!**
 
