@@ -32,11 +32,7 @@
     "theme": "light"
   },
   "activationEvents": [
-    "*",
-    "onCommand:edit-csv.edit",
-    "onCommand:edit-csv.apply",
-    "onCommand:edit-csv.applyAndSave",
-    "onCommand:edit-csv.editWithConfig"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {

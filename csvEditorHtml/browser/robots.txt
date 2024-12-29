@@ -1,4 +1,0 @@
-
-User-agent: *
-Disallow: /legalNotice.html
-Disallow: /privacy.html
